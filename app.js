@@ -19,7 +19,13 @@ const jwt = require("jsonwebtoken");
 const { sendEmail } = require("./node_mailer");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({
+    origin: [
+      "http://localhost:3000",
+      // "https://your-frontend-domain.vercel.app",
+    ],
+    credentials: true,
+  }));
 // app.use(function (req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
 //   res.header("Access-Control-Allow-Headers", "X-Requested-With");
