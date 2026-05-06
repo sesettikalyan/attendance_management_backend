@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const bcrypt = require("bcrypt");
-const studentModel = require("./models/studentSchema");
+const {studentModel} = require("./models/studentSchema");
 const dotenv = require("dotenv");
 const hodSchema = require("./models/hodSchema");
 const adminSchema = require("./models/adminSchema");
@@ -338,15 +338,21 @@ app.post("/students/login", async (req, res) => {
       });
 
       // Update last logged in time
-      student.lastlogged = new Date();
-      await student.save();
+      await studentModel.findByIdAndUpdate(student._id, {
+        lastlogged: new Date(),
+      });
 
       res.status(200).json({ token, student, message: "Login Successful!" });
     } else {
       res.status(400).json({ message: "invalid Username or Password" });
     }
   } catch (error) {
-    res.status(500).send(error);
+    console.error("LOGIN ERROR:", error);
+
+    res.status(500).json({
+      message: error.message,
+      stack: error.stack,
+    });
   }
 });
 // HOD CRUD
@@ -507,7 +513,7 @@ app.post("/hod/login", async (req, res) => {
       res.status(400).json({ message: "invalid Username or Password" });
     }
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send({ message: error.message });
   }
 });
 
@@ -1081,10 +1087,7 @@ if (!process.env.MONGODB_URI) {
 } else {
   // Attempt to connect to MongoDB using process.env.MONGODB_URI
   mongoose
-    .connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
+    .connect(process.env.MONGODB_URI)
     .then(() => {
       app.listen(process.env.PORT || 3000, () => {
         console.log(

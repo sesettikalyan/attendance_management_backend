@@ -108,4 +108,7 @@ const StudentSchema = mongoose.Schema(
 
 const product = mongoose.model("Students", StudentSchema);
 
-(module.exports = product), filemodel;
+module.exports = {
+  studentModel: mongoose.model("Students", StudentSchema),
+  filemodel,
+};

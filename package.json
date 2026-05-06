@@ -7,7 +7,7 @@
     "start": "nodemon app.js"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "author": "karthik",
   "license": "ISC",
